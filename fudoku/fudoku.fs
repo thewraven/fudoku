@@ -159,7 +159,7 @@ let mutate position value s =
     List.replaceAt position value s
 
 let getRealRow sq relativeRow = 
-    let absRow = (sq/3)
+    let absRow = (sq/3)*3
     (absRow + relativeRow)
 
 let getRealCol sq relativeCol =
@@ -176,7 +176,7 @@ let checkEmpties s sq v row empties =
             //one perfect match means the value goes here
             let position = getPosition sq row col
             let newS = List.replaceAt position v s
-            printfn "New sudoku"
+            printfn "New sudoku (inserted %A at %d) " (v.ToString ()) position 
             newS |> printSudoku
             (newS,true)
         | _ ->
@@ -193,7 +193,7 @@ let checkEmpties s sq v row empties =
                 let (_,col) = missingValues.Head 
                 let position = getPosition sq row col
                 let newS = List.replaceAt position v s
-                printfn "New sudoku"
+                printfn "New sudoku (inserted %A at %d) " (v.ToString ()) position 
                 newS |> printSudoku
                 (newS,true)
             else  
@@ -240,10 +240,14 @@ let main argv =
     // )
     // |> ignore
     let row = 0 
-    let (s,checkAgain) = checkByRow s 0
-    match checkAgain with
-    | true -> checkByRow s 0 |> ignore
-    | false -> ()
+    
+    let (s,_) = checkByRow s 0
+    let (s,_) = checkByRow s 1
+    let (s,_) = checkByRow s 2
+    let s = s |> transpose
+    let (s,_) = checkByRow s 0
+    let (s,_) = checkByRow s 1
+    let (s,_) = checkByRow s 2
     0 // return an integer exit code
 
 
